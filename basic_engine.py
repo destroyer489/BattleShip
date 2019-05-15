@@ -1,5 +1,4 @@
 
-
 # Dominic Adamson
 # Put a date here
 # Programming Class Python Battleship Game
