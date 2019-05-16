@@ -9,7 +9,7 @@
 # complete the game.
 
 # You are going to need this
-import random,sys,os,time
+import random,sys,os,time,replit
 
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
@@ -17,7 +17,9 @@ def clamp(n, minn, maxn):
 # While testing your code, leave this at True
 # When you are ready to play, change it to False
 # It will hide the ships location from the player
-testing = True
+testing = False
+
+wins = [0,0]
 
 height,length,board,shipRow,shipColumn = '','','','',''
 # Create the basic board
@@ -124,30 +126,37 @@ def init():
     height = clamp(int(input("how tall do you want your board ")),1,25)
     length = clamp(int(input("how long do you want your board ")),1,25)
     board = createBoard(length,height)
-    shipRow, shipColumn = placeShip(board,height,length)
+    shipRow, shipColumn = placeShip(board,length,height)
     if testing:
-        print(shipRow, shipColumn)
+        print(shipColumn+1, shipRow+1)
         board = markShip(board, shipRow, shipColumn)
 
     print ("Welcome to Battleship!")
     print()
-    numberOfTurns = length*height//5
+    numberOfTurns = (length*height//int(input("how hard do you want it (bigger is harder) ")))+1
     return numberOfTurns
 
+
 def turn(num,numberOfTurns):
-    global height,length,board,shipRow,shipColumn
+    global height,length,board,shipRow,shipColumn,wins
     time.sleep(1) 
     os.system('CLS')
+    replit.clear()
     printBoard(board)
     print ("Turn %i of %i" %(num+1, numberOfTurns))
     guessRow, guessColumn = guess(board,height,length)
     if guessRow == shipRow and guessColumn == shipColumn:
         os.system('CLS')
+        replit.clear()
         board = markHit(board, guessRow, guessColumn)
         print ("Congratulations!  You win!")
         printBoard(board)
+        wins[0] += 1
+        print("you have won %i times and lost %i times" %(wins[0],wins[1]))
         play = input("\nDo you want to play again? y/n\n").lower()
         if play == "y":
+            os.system('CLS')
+            replit.clear()
             main()
             return
         else:
@@ -157,8 +166,19 @@ def turn(num,numberOfTurns):
         board = markMiss(board, guessRow, guessColumn)
         print ("You missed")
         if num == numberOfTurns-1:
-            play = input("\nDo you want to play again? y/n").lower()
+            os.system('CLS')
+            replit.clear()
+            print("you lose")
+            if True:
+                print("The ship was at X: %i Y: %i" %(shipColumn+1, shipRow+1))
+                board = markShip(board, shipRow, shipColumn)
+            printBoard(board)
+            wins[1] += 1
+            print("you have won %i times and lost %i times" %(wins[0],wins[1]))
+            play = input("\nDo you want to play again? y/n\n").lower()
             if play == "y":
+                os.system('CLS')
+                replit.clear()
                 main()
                 return
             else:
@@ -189,7 +209,7 @@ if __name__ == '__main__':
 # -Keep score of wins vs. losses
 # -Make the board size a variable for difficulty+
 # -Add some other difficulty variable, ask the user how hard
-#  to make the game.  Do accordingly.
+#  to make the game.  Do accordingly.+
 # -Tell the user if they are close to hitting the ship
 # -Make this more like real battleship, with ships of longer
 #  length that take more than one hit to sink
